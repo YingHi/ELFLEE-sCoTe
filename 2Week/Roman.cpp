@@ -11,6 +11,18 @@ bool is_Arab_Digit(string str) { // 아라비아 숫자 여부 확인
 	return atoi(str.c_str()) != 0 || str.compare("0") == 0; // 값을 숫자로 변환할 수 있는지 체크함
 }
 
+int checkLevel(int i) {
+	int num = i;
+	int count = 0;
+	do {
+		num /= 10;
+		count++;
+	} while (num > 0);
+	int result = 1;
+	for (int i = 1; i < count; i++) result *= 10;
+	return result;
+}
+
 int change_Romannum(string c) {
 	if (c == "I" || c == "i") return 1;
 	if (c == "V" || c == "v") return 5;
@@ -37,36 +49,53 @@ int is_Roman_Digit(string str) { // 로마 숫자 여부 확인
 		return 4000;
 	}
 	int level = 1; // 반복횟수 담는 int형 변수.
-	for (int i = 0; i < str.size() -1; i++) { // 문법 제대로 되어있는지 체크
+	for (int i = 0; i < str.size() - 1; i++) { // 문법 제대로 되어있는지 체크
 		string now = str.substr(i, 1);
 		string next = str.substr(i + 1, 1);
 		if (now == next) level += 1; // 같은 글자가 반복되면 레벨 +1
 		else {
 			level = 1; // 같은 글자가 반복되지 않았다면 1로 초기화
-		} 
+		}
 		if (level == 4) return 4000; // 만약 같은 글자가 네 번 반복되면 오류이므로 프로그램 종료
 		int now_v = change_Romannum(now);
 		int next_v = change_Romannum(next);
 		if (now_v < next_v) {//앞 숫자가 뒷 숫자보다 작다면
-			if (next_v / now_v == 2 || next_v / now_v == 5 || (next_v == 10 && now_v == 1)) break;
+			if (next_v / now_v == 2 || next_v / now_v == 5 || next_v / now_v == 10 || (next_v == 10 && now_v == 1)) break;
 			return 4000;
 		}
 	}
+	int lv = 10000;
+	bool CanC = false;
 	for (int i = 0; i < str.size(); i++) { // 실제 계산
 		string now = str.substr(i, 1);
+		int a = change_Romannum(now);
+		int b = checkLevel(a);
+		if (lv <= b) {
+			if (!CanC) {
+				return 4000;
+			}
+			CanC = false;
+		}
 		if (i < str.size() - 1) {
 			string next = str.substr(i + 1, 1);
 			int now_v = change_Romannum(now);
 			int next_v = change_Romannum(next);
 			if (now_v < next_v) {//앞 숫자가 뒷 숫자보다 작다면
-				if (next_v / now_v == 2 || next_v / now_v == 5|| (next_v == 10 && now_v == 1)) {
+				if (next_v / now_v == 2 || next_v / now_v == 5 || next_v / now_v == 10 || (next_v == 10 && now_v == 1)) {
+					int a = checkLevel(next_v - now_v);
+					if (lv <= a) return 4000;
+					lv = a;
 					result += (next_v - now_v);
 					i += 1;
-					break;
+					continue;
 				}
 			}
+			if (now_v = next_v) {
+				CanC = true;
+			}
 		}
-		result += change_Romannum(now);
+		lv = b;
+		result += a;
 	}
 	return result;
 }
@@ -165,6 +194,11 @@ void main() {
 		is_arab = false;
 		is_roman = false;
 		input = inputString(input);
+		if (input == "") {
+			cout << "\n올바른 값을 입력해주세요.\n";
+			ResetProgram();
+			continue;
+		}
 		is_arab = is_Arab_Digit(input); // 아라비아 숫자인지 체크
 		if (is_arab) { // 아라비아 숫자 였다면
 			ci = stoi(input);
@@ -183,7 +217,7 @@ void main() {
 				cout << "\n로마 숫자 " << input << "의 변환 결과는 " << ci << "입니다.\n";
 				ResetProgram();
 			}
-			else{
+			else {
 				if (input == "boom!") {
 					cout << "프로그램을 종료합니다.";
 					break;
