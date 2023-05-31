@@ -25,7 +25,7 @@ int checkString(char* str) { // 문자열 검사
             if (is_per == 1) { // 전 문자가 %라면
                 is_per = 2;
             }
-            else if(is_per == 2) { // 이미 %n이 완성된 상태라면
+            else if (is_per == 2) { // 이미 %n이 완성된 상태라면
                 is_per = 0;
             }
         }
@@ -53,7 +53,7 @@ void extractNumbers(const char* str, char* result) {
 }
 
 
-void cutStr(char *mainbuffer, char *cuttingstr) { // 기존 문자열에서 특정 문자열을 자르기
+void cutStr(char* mainbuffer, char* cuttingstr) { // 기존 문자열에서 특정 문자열을 자르기
     int i = strlen(cuttingstr);
     int size = strlen(mainbuffer) + 1;
     for (int j = 0; j < i; j++) {
@@ -61,7 +61,7 @@ void cutStr(char *mainbuffer, char *cuttingstr) { // 기존 문자열에서 특�
             for (int k = 1; k < size; k++) {
                 mainbuffer[k - 1] = mainbuffer[k];
             }
-        } 
+        }
     }
 }
 
@@ -90,7 +90,7 @@ void main()
 {
     char firstbuffer[1024], secondbuffer[1024];
     loadTxt(firstbuffer, secondbuffer); // 문자열 로드
-    if(checkString(firstbuffer)) return;
+    if (checkString(firstbuffer)) return;
     int* i; // int 배열
     char* c; // char 포인터 배열
     char** s; // string 포인터 배열(이중 포인터)
@@ -146,14 +146,14 @@ void main()
                         cc++;
                     }
                     if (firstbuffer[1] == 'd') {
-                        char* str3 = (char*)malloc(sizeof(char*) * (search2 - secondbuffer) + 1);
+                        char* str2 = (char*)malloc(sizeof(char*) * (search2 - secondbuffer) + 1);
                         char extractedint[100];
-                        strncpy(str3, secondbuffer, search2 - secondbuffer);
-                        strcat(str3, "");
-                        extractNumbers(str3, extractedint);
+                        strncpy(str2, secondbuffer, search2 - secondbuffer);
+                        strcat(str2, "");
+                        extractNumbers(str2, extractedint);
                         i[ic] = atoi(extractedint);
                         cutStr(firstbuffer, "%d");
-                        cutStr(secondbuffer, str3);
+                        cutStr(secondbuffer, str2);
                         ic++;
                     }
                 }
